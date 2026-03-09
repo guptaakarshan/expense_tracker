@@ -121,59 +121,6 @@ export const deleteIncome = async (req, res) => {
   }
 };
 
-//to download the data in excel format
-export const downloadIncomeExcel = async (req, res) => {
-  try {
-    const userId = req.user.id;
-
-    const incomes = await incomeModel
-      .find({ userId })
-      .select("description amount category date");
-
-    if (!incomes.length) {
-      return res.status(404).json({
-        success: false,
-        message: "No income data found",
-      });
-    }
-
-    // Convert MongoDB data to plain JSON
-    const data = incomes.map((income) => ({
-      Description: income.description,
-      Amount: income.amount,
-      Category: income.category,
-      Date: income.date.toISOString().split("T")[0],
-    }));
-
-    // Create worksheet
-    const worksheet = XLSX.utils.json_to_sheet(data);
-
-    // Create workbook
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Income");
-
-    // Convert workbook to buffer
-    const buffer = XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
-
-    // Set headers for download
-    res.setHeader(
-      "Content-Disposition",
-      "attachment; filename=income-data.xlsx",
-    );
-    res.setHeader(
-      "Content-Type",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    );
-
-    res.send(buffer);
-  } catch (error) {
-    console.error("Excel export error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-    });
-  }
-};
 
 //to get income overview
 export const getIncomeOverview = async (req, res) => {

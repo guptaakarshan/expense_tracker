@@ -123,60 +123,6 @@ export const deleteExpense = async (req, res) => {
   }
 };
 
-//to download the data in excel format
-export const downloadExpenseExcel = async (req, res) => {
-  try {
-    const userId = req.user.id;
-
-    const expenses = await expenseModel
-      .find({ userId })
-      .select("description amount category date");
-
-    if (!expenses.length) {
-      return res.status(404).json({
-        success: false,
-        message: "No expense data found",
-      });
-    }
-
-    // Convert MongoDB data to plain JSON
-    const data = expenses.map((expense) => ({
-      Description: expense.description,
-      Amount: expense.amount,
-      Category: expense.category,
-      Date: expense.date.toISOString().split("T")[0],
-    }));
-
-    // Create worksheet
-    const worksheet = XLSX.utils.json_to_sheet(data);
-
-    // Create workbook
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Expense");
-
-    // Convert workbook to buffer
-    const buffer = XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
-
-    // Set headers for download
-    res.setHeader(
-      "Content-Disposition",
-      "attachment; filename=expense-data.xlsx",
-    );
-    res.setHeader(
-      "Content-Type",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    );
-
-    res.send(buffer);
-  } catch (error) {
-    console.error("Excel export error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-    });
-  }
-};
-
 //to get expense overview
 export const getExpenseOverview = async (req, res) => {
   try {

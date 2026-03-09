@@ -6,6 +6,7 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Expenses from "./pages/Expenses";
 import Income from "./pages/Income";
+import Insights from "./pages/Insights";
 
 // Protects routes that require authentication
 const ProtectedRoute = () => {
@@ -42,6 +43,7 @@ const App = () => {
         <Route path="/" element={<Dashboard />} />
         <Route path="/expenses" element={<Expenses />} />
         <Route path="/income" element={<Income />} />
+        <Route path="/insights" element={<Insights />} />
       </Route>
 
       {/* Fallback */}

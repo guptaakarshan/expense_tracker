@@ -5,12 +5,14 @@ import {
   HiOutlineCreditCard,
   HiOutlineCash,
   HiOutlineLogout,
+  HiOutlineLightBulb,
 } from "react-icons/hi";
 
 const navItems = [
   { to: "/", label: "Dashboard", icon: HiOutlineViewGrid },
   { to: "/expenses", label: "Expenses", icon: HiOutlineCreditCard },
   { to: "/income", label: "Income", icon: HiOutlineCash },
+  { to: "/insights", label: "AI Insights", icon: HiOutlineLightBulb },
 ];
 
 const Sidebar = () => {
@@ -27,7 +29,7 @@ const Sidebar = () => {
       {/* Logo */}
       <div>
         <h1 className="text-xl font-bold text-indigo-600 mb-8 px-2">
-          ExpenseTracker
+          SpendSense
         </h1>
 
         {/* Navigation */}

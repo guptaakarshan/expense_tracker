@@ -13,7 +13,9 @@ const port = process.env.PORT || 5000;
 //middleware
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: ["https://expense-tracker-six-pi-11.vercel.app", "http://localhost:5173"],
+}));
 app.use(express.urlencoded({ extended: true }));
 
 connectDB();

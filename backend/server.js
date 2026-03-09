@@ -14,7 +14,19 @@ const port = process.env.PORT || 5000;
 
 app.use(express.json());
 app.use(cors({
-  origin: ["https://expense-tracker-six-pi-11.vercel.app", "http://localhost:5173"],
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+    // Allow localhost and any Vercel deployment (production + previews)
+    if (
+      origin.startsWith("http://localhost") ||
+      origin.endsWith(".vercel.app")
+    ) {
+      return callback(null, true);
+    }
+    callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
 }));
 app.use(express.urlencoded({ extended: true }));
 

@@ -5,7 +5,6 @@ import {
   getAllIncomes,
   updateIncome,
   deleteIncome,
-  downloadIncomeExcel,
   getIncomeOverview,
 } from "../controllers/incomeController.js";
 import { auth } from "../middlewares/auth.js";
@@ -16,7 +15,6 @@ incomeRouter.post("/create", auth, createIncome);
 incomeRouter.get("/all", auth, getAllIncomes);
 incomeRouter.put("/update/:id", auth, updateIncome);
 incomeRouter.delete("/delete/:id", auth, deleteIncome);
-incomeRouter.get("/download", auth, downloadIncomeExcel);
 incomeRouter.get("/overview", auth, getIncomeOverview);
 
 export default incomeRouter;

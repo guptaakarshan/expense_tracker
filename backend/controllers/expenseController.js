@@ -1,6 +1,4 @@
 import expenseModel from "../models/expenseModel.js";
-import XLSX from "xlsx";
-
 //add expense
 export const createExpense = async (req, res) => {
   const { description, amount, date, category } = req.body;

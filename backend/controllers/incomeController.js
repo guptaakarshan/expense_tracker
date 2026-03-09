@@ -1,5 +1,4 @@
 import incomeModel from "../models/incomeModel.js";
-import XLSX from "xlsx";
 export const createIncome = async (req, res) => {
   const { description, amount, date, category } = req.body;
   if (!description || !amount || !date || !category) {

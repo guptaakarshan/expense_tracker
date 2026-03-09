@@ -7,7 +7,7 @@ import incomeRouter from "./routes/incomeRoute.js";
 import expenseRouter from "./routes/expenseRoute.js";
 import dashboardRouter from "./routes/dashboardRoute.js";
 const app = express();
-const port = process.env.port;
+const port = process.env.PORT || 5000;
 
 //middleware
 
@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 
 connectDB();
 
-app.use("/api/user", userRouter);
+app.use("/api/users", userRouter);
 app.use("/api/income", incomeRouter);
 app.use("/api/expense", expenseRouter);
 app.use("/api/dashboard", dashboardRouter);

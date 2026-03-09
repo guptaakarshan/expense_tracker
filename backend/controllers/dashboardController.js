@@ -4,14 +4,17 @@ import incomeModel from "../models/incomeModel.js";
 export const getDashboardOverview = async (req, res) => {
   const userId = req.user.id;
   const now = new Date();
+  // Use end of today so expenses/incomes added for today's date are always included
+  const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
   const last30Days = new Date();
   last30Days.setDate(now.getDate() - 30);
+  last30Days.setHours(0, 0, 0, 0);
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
   try {
     const [incomes, expenses] = await Promise.all([
-      incomeModel.find({ userId, date: { $gte: last30Days, $lte:now } }),
-      expenseModel.find({ userId, date: { $gte: last30Days, $lte:now } }),
+      incomeModel.find({ userId, date: { $gte: last30Days, $lte: endOfToday } }),
+      expenseModel.find({ userId, date: { $gte: last30Days, $lte: endOfToday } }),
     ]);
 
     const monthlyIncome = incomes.reduce(

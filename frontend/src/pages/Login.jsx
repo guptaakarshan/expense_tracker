@@ -37,7 +37,7 @@ const Login = () => {
     <div className="min-h-screen bg-[#faf9f7] flex">
       {/* Left panel */}
       <div className="hidden lg:flex w-[420px] bg-zinc-900 flex-col justify-between p-10 shrink-0">
-        <span className="text-white text-lg font-semibold tracking-tight">
+        <span className="text-white text-3xl font-semibold tracking-tight">
           Spend<span className="text-orange-500">Sense</span>
         </span>
         <div>

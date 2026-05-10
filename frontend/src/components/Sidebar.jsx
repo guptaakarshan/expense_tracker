@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
   HiOutlineViewGrid,
@@ -7,6 +7,7 @@ import {
   HiOutlineLogout,
   HiOutlineLightBulb,
 } from "react-icons/hi";
+import ConfirmModal from "./ConfirmModal";
 
 const navItems = [
   { to: "/", label: "Dashboard", icon: HiOutlineViewGrid },
@@ -17,15 +18,17 @@ const navItems = [
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  const handleLogout = () => {
+  const confirmLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/login");
   };
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-56 bg-zinc-900 flex flex-col justify-between py-7 px-4">
+    <>
+      <aside className="fixed left-0 top-0 h-screen w-56 bg-zinc-900 flex flex-col justify-between py-7 px-4">
       {/* Logo */}
       <div>
         <div className="mb-9 px-2">
@@ -62,13 +65,23 @@ const Sidebar = () => {
 
       {/* Logout */}
       <button
-        onClick={handleLogout}
+        onClick={() => setShowLogoutModal(true)}
         className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-zinc-500 hover:text-red-400 hover:bg-white/5 transition-all cursor-pointer"
       >
         <HiOutlineLogout className="w-4 h-4" />
         Logout
       </button>
     </aside>
+
+    <ConfirmModal
+      isOpen={showLogoutModal}
+      title="Log out"
+      message="Are you sure you want to log out of your account?"
+      confirmText="Log out"
+      onConfirm={confirmLogout}
+      onCancel={() => setShowLogoutModal(false)}
+    />
+    </>
   );
 };
 

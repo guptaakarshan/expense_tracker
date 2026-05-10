@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { HiOutlineTrash, HiOutlinePencil } from "react-icons/hi";
+import ConfirmModal from "./ConfirmModal";
 
 const TransactionList = ({ transactions, onDelete, onEdit, type }) => {
+  const [itemToDelete, setItemToDelete] = useState(null);
+
   if (!transactions || transactions.length === 0) {
     return (
       <div className="bg-white border border-stone-200 rounded-xl p-12 text-center">
@@ -11,7 +14,8 @@ const TransactionList = ({ transactions, onDelete, onEdit, type }) => {
   }
 
   return (
-    <div className="bg-white border border-stone-200 rounded-xl overflow-hidden">
+    <>
+      <div className="bg-white border border-stone-200 rounded-xl overflow-hidden">
       <table className="w-full">
         <thead>
           <tr className="border-b border-stone-100 bg-stone-50">
@@ -72,7 +76,7 @@ const TransactionList = ({ transactions, onDelete, onEdit, type }) => {
                   )}
                   {onDelete && (
                     <button
-                      onClick={() => onDelete(item._id)}
+                      onClick={() => setItemToDelete(item._id)}
                       className="p-1.5 rounded-md text-stone-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
                       title="Delete"
                     >
@@ -86,6 +90,19 @@ const TransactionList = ({ transactions, onDelete, onEdit, type }) => {
         </tbody>
       </table>
     </div>
+
+      <ConfirmModal
+        isOpen={!!itemToDelete}
+        title="Delete transaction"
+        message="Are you sure you want to delete this transaction? This action cannot be undone."
+        confirmText="Delete"
+        onConfirm={() => {
+          onDelete(itemToDelete);
+          setItemToDelete(null);
+        }}
+        onCancel={() => setItemToDelete(null)}
+      />
+    </>
   );
 };
 

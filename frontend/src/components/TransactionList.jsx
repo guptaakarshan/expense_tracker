@@ -4,49 +4,47 @@ import { HiOutlineTrash, HiOutlinePencil } from "react-icons/hi";
 const TransactionList = ({ transactions, onDelete, onEdit, type }) => {
   if (!transactions || transactions.length === 0) {
     return (
-      <div className="bg-white rounded-xl border border-gray-100 p-8 shadow-sm text-center">
-        <p className="text-gray-400 text-sm">No transactions yet.</p>
+      <div className="bg-white border border-stone-200 rounded-xl p-12 text-center">
+        <p className="text-stone-400 text-sm">No transactions yet.</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+    <div className="bg-white border border-stone-200 rounded-xl overflow-hidden">
       <table className="w-full">
         <thead>
-          <tr className="border-b border-gray-100">
-            <th className="text-left text-xs font-medium text-gray-500 uppercase px-5 py-3">
+          <tr className="border-b border-stone-100 bg-stone-50">
+            <th className="text-left text-[11px] font-medium text-stone-400 uppercase tracking-wider px-5 py-3">
               Description
             </th>
-            <th className="text-left text-xs font-medium text-gray-500 uppercase px-5 py-3">
+            <th className="text-left text-[11px] font-medium text-stone-400 uppercase tracking-wider px-5 py-3">
               Category
             </th>
-            <th className="text-left text-xs font-medium text-gray-500 uppercase px-5 py-3">
+            <th className="text-left text-[11px] font-medium text-stone-400 uppercase tracking-wider px-5 py-3">
               Date
             </th>
-            <th className="text-right text-xs font-medium text-gray-500 uppercase px-5 py-3">
+            <th className="text-right text-[11px] font-medium text-stone-400 uppercase tracking-wider px-5 py-3">
               Amount
             </th>
-            <th className="text-right text-xs font-medium text-gray-500 uppercase px-5 py-3">
-              Actions
-            </th>
+            <th className="px-5 py-3" />
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-stone-50">
           {transactions.map((item) => (
             <tr
               key={item._id}
-              className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors"
+              className="hover:bg-stone-50/60 transition-colors group"
             >
-              <td className="px-5 py-3.5 text-sm text-gray-800">
+              <td className="px-5 py-3.5 text-sm text-zinc-800 font-medium">
                 {item.description}
               </td>
               <td className="px-5 py-3.5">
-                <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-md">
+                <span className="text-[11px] font-medium bg-stone-100 text-stone-500 px-2.5 py-1 rounded-full">
                   {item.category}
                 </span>
               </td>
-              <td className="px-5 py-3.5 text-sm text-gray-500">
+              <td className="px-5 py-3.5 text-sm text-stone-400 font-mono">
                 {new Date(item.date).toLocaleDateString("en-IN", {
                   day: "numeric",
                   month: "short",
@@ -54,31 +52,31 @@ const TransactionList = ({ transactions, onDelete, onEdit, type }) => {
                 })}
               </td>
               <td
-                className={`px-5 py-3.5 text-sm font-medium text-right ${
-                  type === "income" ? "text-green-600" : "text-red-600"
+                className={`px-5 py-3.5 text-sm font-semibold font-mono text-right ${
+                  type === "income" ? "text-emerald-700" : "text-red-600"
                 }`}
               >
-                {type === "income" ? "+" : "-"}₹
+                {type === "income" ? "+" : "−"}₹
                 {item.amount?.toLocaleString("en-IN")}
               </td>
-              <td className="px-5 py-3.5 text-right">
-                <div className="flex items-center justify-end gap-2">
+              <td className="px-5 py-3.5">
+                <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   {onEdit && (
                     <button
                       onClick={() => onEdit(item)}
-                      className="text-gray-400 hover:text-indigo-600 transition-colors cursor-pointer"
+                      className="p-1.5 rounded-md text-stone-400 hover:text-zinc-700 hover:bg-stone-100 transition-colors cursor-pointer"
                       title="Edit"
                     >
-                      <HiOutlinePencil className="w-4 h-4" />
+                      <HiOutlinePencil className="w-3.5 h-3.5" />
                     </button>
                   )}
                   {onDelete && (
                     <button
                       onClick={() => onDelete(item._id)}
-                      className="text-gray-400 hover:text-red-600 transition-colors cursor-pointer"
+                      className="p-1.5 rounded-md text-stone-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
                       title="Delete"
                     >
-                      <HiOutlineTrash className="w-4 h-4" />
+                      <HiOutlineTrash className="w-3.5 h-3.5" />
                     </button>
                   )}
                 </div>

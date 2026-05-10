@@ -11,13 +11,10 @@ const EXPENSE_CATEGORIES = [
   "Other",
 ];
 
+const EMPTY_FORM = { description: "", amount: "", date: "", category: "" };
+
 const ExpenseForm = ({ onSubmit, initialData, onCancel }) => {
-  const [form, setForm] = useState({
-    description: "",
-    amount: "",
-    date: "",
-    category: "",
-  });
+  const [form, setForm] = useState(EMPTY_FORM);
 
   useEffect(() => {
     if (initialData) {
@@ -27,6 +24,8 @@ const ExpenseForm = ({ onSubmit, initialData, onCancel }) => {
         date: initialData.date?.split("T")[0] || "",
         category: initialData.category || "",
       });
+    } else {
+      setForm(EMPTY_FORM);
     }
   }, [initialData]);
 
@@ -38,16 +37,22 @@ const ExpenseForm = ({ onSubmit, initialData, onCancel }) => {
     e.preventDefault();
     onSubmit({ ...form, amount: Number(form.amount) });
     if (!initialData) {
-      setForm({ description: "", amount: "", date: "", category: "" });
+      setForm(EMPTY_FORM);
     }
   };
 
+  const inputClass =
+    "w-full bg-white border border-stone-200 rounded-lg px-3 py-2.5 text-sm text-zinc-800 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-orange-600/20 focus:border-orange-600 transition-colors";
+
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-      <h3 className="text-lg font-semibold text-gray-800 mb-4">
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white border border-stone-200 rounded-xl p-6"
+    >
+      <h3 className="text-sm font-semibold text-zinc-900 mb-5">
         {initialData ? "Edit Expense" : "Add Expense"}
       </h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <input
           type="text"
           name="description"
@@ -55,17 +60,17 @@ const ExpenseForm = ({ onSubmit, initialData, onCancel }) => {
           value={form.description}
           onChange={handleChange}
           required
-          className="border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+          className={inputClass}
         />
         <input
           type="number"
           name="amount"
-          placeholder="Amount"
+          placeholder="Amount (₹)"
           value={form.amount}
           onChange={handleChange}
           required
           min="1"
-          className="border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+          className={inputClass}
         />
         <input
           type="date"
@@ -73,16 +78,16 @@ const ExpenseForm = ({ onSubmit, initialData, onCancel }) => {
           value={form.date}
           onChange={handleChange}
           required
-          className="border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+          className={inputClass}
         />
         <select
           name="category"
           value={form.category}
           onChange={handleChange}
           required
-          className="border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+          className={inputClass}
         >
-          <option value="">Select Category</option>
+          <option value="">Select category</option>
           {EXPENSE_CATEGORIES.map((cat) => (
             <option key={cat} value={cat}>
               {cat}
@@ -90,10 +95,10 @@ const ExpenseForm = ({ onSubmit, initialData, onCancel }) => {
           ))}
         </select>
       </div>
-      <div className="flex gap-3 mt-4">
+      <div className="flex gap-2 mt-5">
         <button
           type="submit"
-          className="bg-indigo-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors cursor-pointer"
+          className="bg-orange-700 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-orange-800 transition-colors cursor-pointer"
         >
           {initialData ? "Update" : "Add Expense"}
         </button>
@@ -101,7 +106,7 @@ const ExpenseForm = ({ onSubmit, initialData, onCancel }) => {
           <button
             type="button"
             onClick={onCancel}
-            className="bg-gray-100 text-gray-600 px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors cursor-pointer"
+            className="bg-stone-100 text-stone-600 px-5 py-2 rounded-lg text-sm font-medium hover:bg-stone-200 transition-colors cursor-pointer"
           >
             Cancel
           </button>

@@ -42,6 +42,15 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+// Global error handler — must be last
+app.use((err, req, res, next) => {
+  console.error("Unhandled error:", err);
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || "Internal server error",
+  });
+});
+
 app.listen(port, () => {
   console.log(`server is running on port ${port}`);
 });

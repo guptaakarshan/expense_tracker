@@ -25,30 +25,36 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-60 bg-white border-r border-gray-200 flex flex-col justify-between py-6 px-4">
+    <aside className="fixed left-0 top-0 h-screen w-56 bg-zinc-900 flex flex-col justify-between py-7 px-4">
       {/* Logo */}
       <div>
-        <h1 className="text-xl font-bold text-indigo-600 mb-8 px-2">
-          SpendSense
-        </h1>
+        <div className="mb-9 px-2">
+          <span className="text-white text-lg font-semibold tracking-tight">
+            Spend<span className="text-orange-500">Sense</span>
+          </span>
+        </div>
 
         {/* Navigation */}
-        <nav className="flex flex-col gap-1">
+        <nav className="flex flex-col gap-0.5">
           {navItems.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}
               to={to}
               end={to === "/"}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
                   isActive
-                    ? "bg-indigo-50 text-indigo-600"
-                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                    ? "bg-white/10 text-white font-medium"
+                    : "text-zinc-400 hover:text-zinc-200 hover:bg-white/5"
                 }`
               }
             >
-              <Icon className="w-5 h-5" />
-              {label}
+              {({ isActive }) => (
+                <>
+                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-orange-400" : ""}`} />
+                  {label}
+                </>
+              )}
             </NavLink>
           ))}
         </nav>
@@ -57,9 +63,9 @@ const Sidebar = () => {
       {/* Logout */}
       <button
         onClick={handleLogout}
-        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors cursor-pointer"
+        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-zinc-500 hover:text-red-400 hover:bg-white/5 transition-all cursor-pointer"
       >
-        <HiOutlineLogout className="w-5 h-5" />
+        <HiOutlineLogout className="w-4 h-4" />
         Logout
       </button>
     </aside>

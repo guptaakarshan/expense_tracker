@@ -1,13 +1,41 @@
 @import "tailwindcss";
 
+:root {
+  --accent: #c2410c;
+  --accent-light: #fff7ed;
+  --accent-hover: #9a3412;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family:
-    "Inter",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    sans-serif;
+  font-family: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #faf9f7;
+  color: #1c1917;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d6d3d1;
+  border-radius: 4px;
+}
+
+/* Form inputs */
+input, select, textarea {
+  font-family: inherit;
+}
+
+/* Number font for amounts */
+.font-mono {
+  font-family: "DM Mono", monospace;
 }

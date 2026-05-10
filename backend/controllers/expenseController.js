@@ -63,8 +63,8 @@ export const updateExpense = async (req, res) => {
   const { description, amount } = req.body;
   try {
     const updatedExpense = await expenseModel
-      .findByIdAndUpdate(
-        { _id: id, userId: userId },
+      .findOneAndUpdate(
+        { _id: id, userId },
         { description, amount },
         { new: true, runValidators: true },
       )
@@ -97,9 +97,9 @@ export const deleteExpense = async (req, res) => {
   const { id } = req.params;
   const userId = req.user.id;
   try {
-    const deletedExpense = await expenseModel.findByIdAndDelete({
+    const deletedExpense = await expenseModel.findOneAndDelete({
       _id: id,
-      userId: userId,
+      userId,
     });
     if (!deletedExpense) {
       return res.status(404).json({
@@ -125,8 +125,10 @@ export const deleteExpense = async (req, res) => {
 export const getExpenseOverview = async (req, res) => {
   try {
     const userId = req.user.id;
-    const expenses = await expenseModel.find({ userId });
-    sort({ date: -1 }).select("amount category description date");
+    const expenses = await expenseModel
+      .find({ userId })
+      .sort({ date: -1 })
+      .select("amount category description date");
 
     const totalExpense = expenses.reduce((acc, cur) => acc + cur.amount, 0);
     const averageExpense = expenses.length > 0 ? totalExpense / expenses.length : 0;

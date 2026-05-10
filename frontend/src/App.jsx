@@ -13,9 +13,9 @@ const ProtectedRoute = () => {
   const token = localStorage.getItem("token");
   if (!token) return <Navigate to="/login" replace />;
   return (
-    <div className="flex min-h-screen bg-[#F7F8FA]">
+    <div className="flex min-h-screen bg-[#faf9f7]">
       <Sidebar />
-      <main className="ml-60 flex-1 p-6">
+      <main className="ml-56 flex-1 p-8 max-w-[1200px]">
         <Outlet />
       </main>
     </div>

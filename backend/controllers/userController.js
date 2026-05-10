@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) throw new Error("JWT_SECRET environment variable is not set");
 
 const TOKEN_EXPIRES_IN = 60 * 60 * 24 * 7; // 7 days
 
@@ -49,7 +50,7 @@ export const registerUser = async (req, res) => {
       password: hashedPassword,
     });
     const token = createToken(user._id);
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       message: "User registered successfully",
       token,
@@ -76,16 +77,16 @@ export const loginUser = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
-        message: "User not found",
+        message: "Invalid email or password",
       });
     }
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
-        message: "Incorrect password",
+        message: "Invalid email or password",
       });
     }
     const token = createToken(user._id);

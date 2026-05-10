@@ -12,26 +12,40 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  CartesianGrid,
+  Cell,
 } from "recharts";
 import Navbar from "../components/Navbar";
 import SummaryCard from "../components/SummaryCard";
 import { getDashboardOverview } from "../services/dashboardService";
 
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-zinc-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg">
+        <p className="font-medium">{label}</p>
+        <p className="text-stone-300 mt-0.5">₹{payload[0].value?.toLocaleString("en-IN")}</p>
+      </div>
+    );
+  }
+  return null;
+};
+
 const Dashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const location = useLocation();
 
-  // Refetch every time the user navigates to this page
   useEffect(() => {
     setLoading(true);
+    setError("");
     const fetchData = async () => {
       try {
         const res = await getDashboardOverview();
         setData(res.data);
       } catch (err) {
         console.error("Failed to load dashboard", err);
+        setError("Failed to load dashboard data. Please try again.");
       } finally {
         setLoading(false);
       }
@@ -42,17 +56,25 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <p className="text-gray-400 text-sm">Loading...</p>
+        <p className="text-stone-400 text-sm">Loading...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p className="text-red-500 text-sm">{error}</p>
       </div>
     );
   }
 
   const summaryCards = [
     {
-      title: "Total Balance",
+      title: "Net Balance",
       amount: data?.savings || 0,
       icon: HiOutlineTrendingUp,
-      color: "indigo",
+      color: "neutral",
     },
     {
       title: "Total Income",
@@ -72,72 +94,95 @@ const Dashboard = () => {
     <div>
       <Navbar title="Dashboard" />
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+      {/* Summary row */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         {summaryCards.map((card) => (
           <SummaryCard key={card.title} {...card} />
         ))}
       </div>
 
+      {/* Savings rate strip */}
+      {data?.savingsRate !== undefined && (
+        <div className="bg-white border border-stone-200 rounded-xl px-5 py-4 mb-8 flex items-center justify-between">
+          <div>
+            <p className="text-xs font-medium text-stone-400 uppercase tracking-wide">
+              Savings rate (last 30 days)
+            </p>
+            <p className={`text-2xl font-semibold font-mono mt-1 ${data.savingsRate >= 0 ? "text-emerald-700" : "text-red-600"}`}>
+              {data.savingsRate}%
+            </p>
+          </div>
+          <div className="flex-1 mx-8">
+            <div className="h-1.5 bg-stone-100 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-emerald-600 rounded-full transition-all"
+                style={{ width: `${Math.min(Math.max(data.savingsRate, 0), 100)}%` }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Expense Distribution Chart */}
-        <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-          <h3 className="text-sm font-semibold text-gray-800 mb-4">
-            Expense by Category
-          </h3>
+        {/* Expense by Category */}
+        <div className="bg-white border border-stone-200 rounded-xl p-5">
+          <p className="text-sm font-semibold text-zinc-900 mb-5">
+            Spending by category
+          </p>
           {data?.expenseDistribution?.length > 0 ? (
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={data.expenseDistribution}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart
+                data={data.expenseDistribution}
+                barSize={24}
+                margin={{ top: 0, right: 0, bottom: 0, left: -10 }}
+              >
                 <XAxis
                   dataKey="category"
-                  tick={{ fontSize: 12, fill: "#9ca3af" }}
+                  tick={{ fontSize: 11, fill: "#a8a29e" }}
                   axisLine={false}
                   tickLine={false}
                 />
                 <YAxis
-                  tick={{ fontSize: 12, fill: "#9ca3af" }}
+                  tick={{ fontSize: 11, fill: "#a8a29e" }}
                   axisLine={false}
                   tickLine={false}
                 />
-                <Tooltip
-                  contentStyle={{
-                    borderRadius: "8px",
-                    border: "1px solid #e5e7eb",
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
-                  }}
-                />
-                <Bar
-                  dataKey="amount"
-                  fill="#4F46E5"
-                  radius={[6, 6, 0, 0]}
-                  maxBarSize={40}
-                />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: "#f5f4f2" }} />
+                <Bar dataKey="amount" radius={[4, 4, 0, 0]}>
+                  {data.expenseDistribution.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={index === 0 ? "#c2410c" : "#e8d5cc"}
+                    />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <p className="text-gray-400 text-sm text-center py-16">
-              No expense data yet
-            </p>
+            <div className="flex items-center justify-center h-48">
+              <p className="text-stone-400 text-sm">No expense data yet</p>
+            </div>
           )}
         </div>
 
         {/* Recent Transactions */}
-        <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-          <h3 className="text-sm font-semibold text-gray-800 mb-4">
-            Recent Transactions
-          </h3>
+        <div className="bg-white border border-stone-200 rounded-xl p-5">
+          <p className="text-sm font-semibold text-zinc-900 mb-5">
+            Recent transactions
+          </p>
           {data?.recentTransactions?.length > 0 ? (
-            <div className="space-y-3">
+            <div className="space-y-0.5">
               {data.recentTransactions.map((txn) => (
                 <div
                   key={txn._id}
-                  className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0"
+                  className="flex items-center justify-between py-2.5 border-b border-stone-50 last:border-0"
                 >
-                  <div>
-                    <p className="text-sm text-gray-800">{txn.description}</p>
-                    <p className="text-xs text-gray-400">
-                      {txn.category} •{" "}
+                  <div className="min-w-0">
+                    <p className="text-sm text-zinc-800 font-medium truncate">
+                      {txn.description}
+                    </p>
+                    <p className="text-xs text-stone-400 mt-0.5">
+                      {txn.category} ·{" "}
                       {new Date(txn.date).toLocaleDateString("en-IN", {
                         day: "numeric",
                         month: "short",
@@ -145,22 +190,20 @@ const Dashboard = () => {
                     </p>
                   </div>
                   <span
-                    className={`text-sm font-medium ${
-                      txn.type === "income"
-                        ? "text-green-600"
-                        : "text-red-600"
+                    className={`text-sm font-semibold font-mono ml-4 shrink-0 ${
+                      txn.type === "income" ? "text-emerald-700" : "text-red-600"
                     }`}
                   >
-                    {txn.type === "income" ? "+" : "-"}₹
+                    {txn.type === "income" ? "+" : "−"}₹
                     {txn.amount?.toLocaleString("en-IN")}
                   </span>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-gray-400 text-sm text-center py-16">
-              No recent transactions
-            </p>
+            <div className="flex items-center justify-center h-48">
+              <p className="text-stone-400 text-sm">No recent transactions</p>
+            </div>
           )}
         </div>
       </div>

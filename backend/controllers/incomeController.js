@@ -62,8 +62,8 @@ export const updateIncome = async (req, res) => {
   const { description, amount } = req.body;
   try {
     const updatedIncome = await incomeModel
-      .findByIdAndUpdate(
-        { _id: id, userId: userId },
+      .findOneAndUpdate(
+        { _id: id, userId },
         { description, amount },
         { new: true, runValidators: true },
       )
@@ -96,9 +96,9 @@ export const deleteIncome = async (req, res) => {
   const { id } = req.params;
   const userId = req.user.id;
   try {
-    const deletedIncome = await incomeModel.findByIdAndDelete({
+    const deletedIncome = await incomeModel.findOneAndDelete({
       _id: id,
-      userId: userId,
+      userId,
     });
     if (!deletedIncome) {
       return res.status(404).json({
@@ -125,8 +125,10 @@ export const deleteIncome = async (req, res) => {
 export const getIncomeOverview = async (req, res) => {
   try {
     const userId = req.user.id;
-    const incomes = await incomeModel.find({ userId });
-    sort({ date: -1 }).select("amount category description date");
+    const incomes = await incomeModel
+      .find({ userId })
+      .sort({ date: -1 })
+      .select("amount category description date");
 
     const totalIncome = incomes.reduce((acc, cur) => acc + cur.amount, 0);
     const averageIncome = incomes.length > 0 ? totalIncome / incomes.length : 0;

@@ -8,6 +8,7 @@ const incomeSchema=new mongoose.Schema({
   amount:{
     type:Number,
     required:true,
+    min:[1, "Amount must be at least 1"],
   },
   date:{
     type:Date,
@@ -19,7 +20,7 @@ const incomeSchema=new mongoose.Schema({
   },
   userId:{
     type:mongoose.Schema.Types.ObjectId,
-    ref:"user",
+    ref:"User",
     required:true,
   },
   type:{

@@ -20,7 +20,8 @@ app.use(cors({
     // Allow localhost and any Vercel deployment (production + previews)
     if (
       origin.startsWith("http://localhost") ||
-      origin.endsWith(".vercel.app")
+      origin.endsWith(".vercel.app") ||
+      origin === "https://spendsense.akarshan.dev"
     ) {
       return callback(null, true);
     }
